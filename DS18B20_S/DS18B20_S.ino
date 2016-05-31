@@ -1,7 +1,7 @@
 #include "DS18B20_S.h"
 //DS18B20(byte pin)  连接管脚
 //传感器设定为10位模式，每次转换时间<187.5ms,如果需要12位模式，请修改库文件of ds.set(0x7F);
-DS18B20_S  ds(10);//pin9
+DS18B20_S  ds(10);//pin10
 void setup() {
   Serial.begin(9600);
 }

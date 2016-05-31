@@ -8,7 +8,7 @@ void setup() {
   //port 4    GND
   Serial.begin(19200);
   Serial.println("Initing...");
-  sensor.begin(&Serial3);
+  sensor.begin(&Serial2);
 }
 
 void loop() {
