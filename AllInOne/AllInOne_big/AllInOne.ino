@@ -112,8 +112,8 @@ void loop() {
     Serial.println(co2);
   }
   */
-  unsigned long duration = pulseIn(senseAirPin, HIGH, 1004);
-  int co2 = (duration - 2) * 2;
+  unsigned long duration = pulseIn(senseAirPin, HIGH, 1000);
+  int co2 = duration * 2;
   
   delay(500);
   

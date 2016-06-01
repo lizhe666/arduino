@@ -8,9 +8,7 @@ extern uint8_t SmallFont[];
 //QD220A is for QDtech 2.2inch SPI LCD Module,Driver IC:ILI9225
 UTFT myGLCD(QD220A, A2, A1, A5, A4, A3); // Remember to change the model parameter to suit your display module!
 
-// T6603 must init before pm2.5 TODO try to know why?
-#include <T6603HardSerial.h>
-T6603HardSerial t6603;
+int senseAirPin = 10;
 
 #include <Pm25HardSerial.h>
 Pm25HardSerial pms5003;
@@ -70,8 +68,7 @@ void setup() {
   myGLCD.print("PM10", 20, 130);
   myGLCD.print("ug/m3", 180, 130);
 
-  //init sensors begin
-  t6603.begin(&Serial3);
+  pinMode(senseAirPin, INPUT);
 
   pms5003.begin(&Serial2, 9);
   pms5003.sleep(false);
@@ -100,8 +97,8 @@ void infraRedLed() {
 void loop() {
   //Serial.print("freeMemory()=");
   //Serial.println(freeMemory());
-  
-  int co2 = t6603.getCO2();
+  unsigned long duration = pulseIn(senseAirPin, HIGH, 1000);
+  int co2 = duration * 20;
   delay(500);
   
   pms5003.read();
