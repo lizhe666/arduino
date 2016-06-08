@@ -98,7 +98,7 @@ void loop() {
   //Serial.print("freeMemory()=");
   //Serial.println(freeMemory());
   unsigned long duration = pulseIn(senseAirPin, HIGH, 1000);
-  int co2 = duration * 20;
+  int co2 = duration * 5;
   delay(500);
   
   pms5003.read();

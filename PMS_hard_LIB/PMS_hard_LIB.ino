@@ -18,6 +18,10 @@ void loop() {
     Serial.println(pm25HardSerial.getLastPM100());
     Serial.print("HCHO=");
     Serial.println(pm25HardSerial.getLastHCHO());
+    Serial.print("T=");
+    Serial.println(pm25HardSerial.getLastT());
+    Serial.print("H=");
+    Serial.println(pm25HardSerial.getLastH());
     Serial.println("_______________________");
     delay(500); // pm25 need to wait at least 500
   }
