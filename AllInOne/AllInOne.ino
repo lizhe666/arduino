@@ -22,6 +22,8 @@ DHT dht(DHTPIN, DHTTYPE);
 #define INFRA_RED_PIN 2
 #define INFRA_RED_INTERRUPT 0
 
+#define USE_WIFI_PIN 7
+
 #include <MD5.h>
 #include "ESP8266.h"
 ESP8266 esp8266;
@@ -30,6 +32,7 @@ long lastTime = millis();
 
 void setup() {
   Serial.begin(115200);
+  pinMode(USE_WIFI_PIN, OUTPUT);
 
   pinMode(11, OUTPUT);
   digitalWrite(11, HIGH);
@@ -76,11 +79,20 @@ void setup() {
   dht.begin();
   //init sensors end
 
-  esp8266.init(&Serial1, 13);
-  myGLCD.print("Wifi Configing ...", CENTER, 26);
-  esp8266.smartConfig();
-  //clear last
-  myGLCD.print("                  ", CENTER, 26);
+  if (digitalRead(USE_WIFI_PIN)) { //pin high
+    esp8266.init(&Serial1, 13);
+    myGLCD.print("Wifi Configing ...", CENTER, 26);
+    esp8266.smartConfig();
+    //clear last
+    myGLCD.print("                  ", CENTER, 26);
+    if (esp8266.isWifiConnect()) {
+      myGLCD.print("Wifi Connected", CENTER, 26);
+    } else {
+      myGLCD.print("No Wifi", CENTER, 26);
+    }
+  } else {
+    myGLCD.print("No Wifi", CENTER, 26);
+  }
 
   attachInterrupt(INFRA_RED_INTERRUPT, infraRedLed, CHANGE);
 
@@ -100,7 +112,7 @@ void loop() {
   unsigned long duration = pulseIn(senseAirPin, HIGH, 1000);
   int co2 = duration * 5;
   delay(500);
-  
+
   pms5003.read();
   float hcho = pms5003.getLastHCHO();
   int pm10 = pms5003.getLastPM10();
@@ -109,7 +121,7 @@ void loop() {
   // Reading temperature or humidity takes about 250 milliseconds!
   float h = dht.readHumidity();
   float t = dht.readTemperature();
-  
+
 
   //clear rect last
   // myGLCD.setColor(0, 0, 0);
@@ -157,13 +169,7 @@ void loop() {
     myGLCD.setBackColor(VGA_BLACK);
   }
 
-  if (esp8266.isWifiConnect()) {
-    myGLCD.print("Wifi Connected", CENTER, 26);
-  } else {
-    myGLCD.print("No Wifi", CENTER, 26);
-  }
-  
-  if (millis() - lastTime >= 30000) { //每分钟上传一次数据
+  if (digitalRead(USE_WIFI_PIN) && millis() - lastTime >= 30000) { //每分钟上传一次数据
     lastTime = millis();
 
     String host = F("www.ixinfeng.com");
@@ -191,12 +197,12 @@ void loop() {
     free(md5str);
 
     Serial.println(data);
-    
+
 
     String html = esp8266.httpGet(host, 80, path + data);
     Serial.println(html.length());
     Serial.println(html);
-    
+
   }
 
   Serial.println(millis() / 1000);
