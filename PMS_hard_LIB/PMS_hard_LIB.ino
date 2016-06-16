@@ -5,6 +5,7 @@ void setup() {
   Serial.begin(9600);
   pm25HardSerial.begin(&Serial2,7);  
   pm25HardSerial.sleep(false);
+  Serial.print("setup");
 
 }
 
