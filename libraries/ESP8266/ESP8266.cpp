@@ -38,7 +38,12 @@ bool ESP8266::doATCmdWithCheck(String cmd, const char* check,
 	return result;
 }
 
-void ESP8266::smartConfig(/*TODO*/) { //这里需要传入一个回调函数，用来在调用 smart config 的时候，用这个函数显示相关信息来提示用户，这个时候该配置网络了
+/**
+*  type 0 AI_LINK
+*  type 1 ESP_TOUCH
+*  type 2 微信公众号
+*/
+void ESP8266::smartConfig(String type/*TODO*/) { //这里需要传入一个回调函数，用来在调用 smart config 的时候，用这个函数显示相关信息来提示用户，这个时候该配置网络了
 	Serial.println(("ESP8266::smartConfig"));
 	do {
 		delay(200);
@@ -49,7 +54,7 @@ void ESP8266::smartConfig(/*TODO*/) { //这里需要传入一个回调函数，�
 	} else {
 		//需要配置smart config
 		Serial.println(("Now trying to connecting wifi  you have 120 seconds"));
-		if (doATCmdWithCheck("AT+CWSMARTSTART=1\r\n", "WIFI CONNECTED",
+		if (doATCmdWithCheck("AT+CWSMARTSTART="+type+"\r\n", "WIFI CONNECTED",
 				120000)) { //等待 smart config 配置成功 (等待时间2分钟，两分钟未完成配置，则选择失效)
 			wifiConnect = true;
 		} else { //配置失败，进入无网络模式

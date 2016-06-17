@@ -5,16 +5,17 @@
 #define PM25_MAX_ATTEMPTS 3
 
 //带有温湿度的，是40字节
-#define BUFFER_SIZE 40
+#define PM25_BUFFER_SIZE 40
+#define PM25_WITH_DHT  //如果是40字节版本，则包含了温湿度检测
 //无温湿度的，是32字节
-//#define BUFFER_SIZE 32
+//#define PM25_BUFFER_SIZE 32
 
 class Pm25HardSerial {
 
 private:
   HardwareSerial* serialPM25;
   int sleepPin; //休眠的指针号
-  byte bufferBytes[BUFFER_SIZE];
+  byte bufferBytes[PM25_BUFFER_SIZE];
   int lastPM10 = 0;
   int lastPM25 = 0;
   int lastPM100 = 0;

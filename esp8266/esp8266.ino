@@ -11,7 +11,7 @@ void setup() {
 
 
   esp8266.init(&Serial1, 13);
-  esp8266.smartConfig();
+  esp8266.smartConfig("0");
   Serial.println(F("setup out"));
 }
 //---------------------------------------------------------------------

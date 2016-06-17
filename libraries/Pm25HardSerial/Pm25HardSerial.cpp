@@ -9,14 +9,14 @@ void Pm25HardSerial::begin(HardwareSerial* serial, int pin) {
 
 bool Pm25HardSerial::read(void) {
 	for ( int attempts = 0; attempts < PM25_MAX_ATTEMPTS; attempts++ ) {
-		//批量读取数据源  BUFFER_SIZE  个字节
+		//批量读取数据源  PM25_BUFFER_SIZE  个字节
 		int i = 0;    
 		while (serialPM25->available()) {
-			//Serial.print(i);
 			bufferBytes[i] = serialPM25->read();
+			//Serial.print(bufferBytes[i],HEX);
 			//起始确认，有可能不是，得根据后续的校验
 			if(i==3){
-				if(bufferBytes[0]==0x42&&bufferBytes[1]==0x4d&&bufferBytes[2]==0x00&&bufferBytes[3]==0x1c){
+				if(bufferBytes[0]==0x42&&bufferBytes[1]==0x4d&&bufferBytes[2]==0x00&&bufferBytes[3]==PM25_BUFFER_SIZE-4){
 					//起始符号正确
 				}else{
 					i--; //读取4个字节后，验证，如果不正确，则回退一位重新开始
@@ -26,24 +26,24 @@ bool Pm25HardSerial::read(void) {
 					bufferBytes[3] = NULL;
 				}
 			}
-			if(i>=BUFFER_SIZE-1){
+			if(i>=PM25_BUFFER_SIZE-1){
 
 				int checksum = 0;
-				for(int j=0;j<=BUFFER_SIZE-3;j++){
+				for(int j=0;j<=PM25_BUFFER_SIZE-3;j++){
 					checksum += (int)bufferBytes[j];
 					//Serial.println(j);
 
 				}
 				//Serial.println(checksum);
-				//Serial.println(bytesToInt(bufferBytes[BUFFER_SIZE-2], bufferBytes[BUFFER_SIZE-1]));
-				if(checksum == bytesToInt(bufferBytes[BUFFER_SIZE-2], bufferBytes[BUFFER_SIZE-1])){
+				//Serial.println(bytesToInt(bufferBytes[PM25_BUFFER_SIZE-2], bufferBytes[PM25_BUFFER_SIZE-1]));
+				if(checksum == bytesToInt(bufferBytes[PM25_BUFFER_SIZE-2], bufferBytes[PM25_BUFFER_SIZE-1])){
 					lastPM10 = bytesToInt(bufferBytes[10], bufferBytes[11]);
 					lastPM25 = bytesToInt(bufferBytes[12], bufferBytes[13]);
 					lastPM100 = bytesToInt(bufferBytes[14], bufferBytes[15]);
 					
 					lastHCHO = ((float)(bytesToInt(bufferBytes[28], bufferBytes[29]))) / 1000.0;
 					
-					if(BUFFER_SIZE>=40){
+					if(PM25_BUFFER_SIZE>=40){
 						lastT = ((float)(bytesToInt(bufferBytes[30], bufferBytes[31]))) / 10.0;
 						lastH = ((float)(bytesToInt(bufferBytes[32], bufferBytes[32]))) / 10.0;
 					}else{
@@ -62,11 +62,12 @@ bool Pm25HardSerial::read(void) {
 			delay(10);
 		}
 
-		//Serial.print("attempts=");
-		//Serial.print(attempts);
-		//Serial.println("___");
-		//Serial.println(i);
-
+		/*
+		Serial.print("attempts=");
+		Serial.print(attempts);
+		Serial.println("___");
+		Serial.println(i);
+		*/
 	}
 	return false;
 }

@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-#define ESP8266_DEBUG false
+#define ESP8266_DEBUG true
 
 class ESP8266 {
 
@@ -15,8 +15,8 @@ private:
 	bool doATCmdWithCheck(String,const char*, unsigned long);
 
 public:
-	void init(HardwareSerial* s, int pin);
-	void smartConfig();
+	void init(HardwareSerial*, int);
+	void smartConfig(String);
 	String httpGet(String, int, String);
 	String httpPost();
 
