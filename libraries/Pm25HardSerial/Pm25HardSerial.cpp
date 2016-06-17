@@ -45,7 +45,7 @@ bool Pm25HardSerial::read(void) {
 					
 					if(PM25_BUFFER_SIZE>=40){
 						lastT = ((float)(bytesToInt(bufferBytes[30], bufferBytes[31]))) / 10.0;
-						lastH = ((float)(bytesToInt(bufferBytes[32], bufferBytes[32]))) / 10.0;
+						lastH = ((float)(bytesToInt(bufferBytes[32], bufferBytes[33]))) / 10.0;
 					}else{
 						lastT = 0.0;
 						lastH = 0.0;

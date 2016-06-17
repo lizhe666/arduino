@@ -95,7 +95,7 @@ void setup() {
   if (digitalRead(WIFI_PIN)) {  //pin high
     esp8266.init(&Serial1, 13);
     tft.drawCentreString("Wifi Configing ...", CENTRE, 48, TFT_FONT);
-    esp8266.smartConfig("2");
+    esp8266.smartConfig("1");
     tft.fillRect(0, 48, 480, 28, TFT_BLACK);//clear last
   }
   /////////////////////////////////////////////////////////////////////
