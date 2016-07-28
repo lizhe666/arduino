@@ -2,6 +2,8 @@
 #include <MD5.h>
 //#include <MemoryFree.h>
 #define ALLINONE_DEBUG
+String ALLINONE_MD5_KEY = "2054120bd4cb83bb";
+String ALLINONE_UID = "3";
 
 //LCD
 #include <TFT_HX8357.h> // Hardware-specific library
@@ -51,6 +53,7 @@ void setup() {
   tft.fillRect(0, 0, 480, 27, TFT_RED);
   tft.setTextColor(TFT_WHITE, TFT_RED);
   tft.drawCentreString("** Home Sensor CENTRE **", CENTRE, 1, TFT_FONT);
+  
   tft.setTextColor(TFT_YELLOW, TFT_BLACK);
   tft.drawCentreString("> www.ixinfeng.com <", CENTRE, 288, TFT_FONT);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
@@ -205,12 +208,12 @@ void loop() {
 
     String host = F("www.ixinfeng.com");
     String path = F("/send");
-    String data = "?uid=1&t=" + (String) tAvergae + "&h="
+    String data = "?uid="+ALLINONE_UID+"&t=" + (String) tAvergae + "&h="
                   + (String) hAvergae + "&co2=" + (String) co2Avergae + "&hcho="
                   + (String) hchoAvergae + "&pm10=" + (String) pm10Avergae
                   + "&pm25=" + (String) pm25Avergae + "&pm100="
                   + (String) pm100Avergae;
-    String sigData = data + "2054120bd4cb83bb";
+    String sigData = data + ALLINONE_MD5_KEY;
     //generate the MD5 hash for our string
     char* _data;
     sigData.toCharArray(_data, sigData.length() + 1);
@@ -231,11 +234,12 @@ void loop() {
 
     Serial.println(data);
 
-
-    String html = esp8266.httpGet(host, 80, path + data);
-    Serial.println(html.length());
-    Serial.println(html);
-
+    //get time
+    String retJson = esp8266.httpGet(host, 80, path + data);
+    Serial.println(retJson);
+    //
+    String dateStr = "";
+    String timeStr = "";
 
     times = 0; //充值平均值计数器
     co2Avergae = 0;

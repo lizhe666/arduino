@@ -19,5 +19,6 @@ void loop()
   myservo.write(180);//设置舵机旋转的角度
   Serial.println(180);
   delay(1000);
+  
 }
 

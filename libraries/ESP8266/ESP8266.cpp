@@ -52,6 +52,8 @@ void ESP8266::smartConfig(String type/*TODO*/) { //这里需要传入一个回�
 	if (doATCmdWithCheck("AT+RST\r\n", "WIFI GOT IP", 15000)) {
 		wifiConnect = true;
 	} else {
+		doATCmdWithCheck("AT+CWMODE=1\r\n", "OK", 5000);
+		
 		//需要配置smart config
 		Serial.println(("Now trying to connecting wifi  you have 120 seconds"));
 		if (doATCmdWithCheck("AT+CWSMARTSTART="+type+"\r\n", "WIFI CONNECTED",
