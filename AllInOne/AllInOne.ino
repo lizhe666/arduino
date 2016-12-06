@@ -3,7 +3,7 @@
 //#include <MemoryFree.h>
 #define ALLINONE_DEBUG
 String ALLINONE_MD5_KEY = "2054120bd4cb83bb";
-String ALLINONE_UID = "3";
+String ALLINONE_UID = "4";
 
 //LCD
 #include <TFT_HX8357.h> // Hardware-specific library
@@ -263,4 +263,3 @@ void loop() {
 #endif
 
 }
-

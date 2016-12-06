@@ -10,30 +10,37 @@ void setup() {
 
   //  doATCmd("AT+ROLE1\r\n", 1000);
   //doATCmd("AT+HELP\r\n", 3000);
-  doATCmd("AT+VERSION\r\n", 1000);
-  doATCmd("AT+LADDR\r\n", 1000);
+  //doATCmd("AT+VERSION\r\n", 1000);
+  //doATCmd("AT+LADDR\r\n", 1000);
   doATCmd("AT+NAME\r\n", 1000);
-  doATCmd("AT+PIN\r\n", 1000);
-  doATCmd("AT+BAUD\r\n", 1000);
-  doATCmd("AT+STOP\r\n", 1000);
+  //doATCmd("AT+PIN\r\n", 1000);
+  //doATCmd("AT+BAUD\r\n", 1000);
+  //doATCmd("AT+STOP\r\n", 1000);
   doATCmd("AT+PARI\r\n", 1000);
   doATCmd("AT+ROLE0\r\n", 1000);
-  doATCmd("AT+INQ\r\n", 20000);
-  //doATCmd("AT+SHOW\r\n", 10000);
+  doATCmd("AT+INQ\r\n", 2000);
+  doATCmd("AT+SHOW\r\n", 1000);
 
 
 
 }
 
+int num = 0;
 void loop() {
-  Serial3.write(1);
-  int available = Serial3.available();
-  while (available > 0) {
+
+  Serial3.write(num++);
+  Serial.println(num);
+  num = num % 1000;
+
+  delay(200); //必须增加这行代码，否则数据接受不全
+  //int available = Serial3.available();
+  /*while (available > 0) {
     char c = (char) Serial3.read();
     Serial.print(c);
     available = Serial3.available();
     delay(20); //必须增加这行代码，否则数据接受不全
   }
+  */
 }
 
 /**

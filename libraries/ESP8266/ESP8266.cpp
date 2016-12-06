@@ -2,6 +2,7 @@
 
 void ESP8266::init(HardwareSerial* s, int pin) {
 	Serial.println(("ESP8266::ESP8266 init"));
+			
 	this->wifiConnect = false;
 	this->hardSerial = s;
 	hardSerial->begin(115200);
@@ -16,8 +17,7 @@ void ESP8266::init(HardwareSerial* s, int pin) {
 /**
  * 发送AT指令，并且
  */
-bool ESP8266::doATCmdWithCheck(String cmd, const char* check,
-		unsigned long timeout) {
+bool ESP8266::doATCmdWithCheck(String cmd, const char* check, unsigned long timeout) {
 	if(ESP8266_DEBUG){
 		Serial.print(("ESP8266::doATCmdWithCheck\tCHECK="));
 		Serial.println(check);
@@ -28,14 +28,58 @@ bool ESP8266::doATCmdWithCheck(String cmd, const char* check,
 	this->clearResults();
 	hardSerial->setTimeout(timeout);
 	hardSerial->print(cmd);
+	delay(200);//这里需要执行delay否则会导致异常
 	bool result = hardSerial->find((char*) check);
-	delay(100);//这里需要执行delay否则会导致异常
 	if(ESP8266_DEBUG){
 		Serial.print(("\tRESULT="));
 		Serial.println(result);
 	}
 
 	return result;
+}
+
+/**
+ * 发送AT 数据，并且检查返回
+ */
+bool ESP8266::doATDataWithCheck(byte buf[],int length, const char* check,unsigned long timeout) {
+	if(ESP8266_DEBUG){
+		Serial.print(("ESP8266::doATDataWithCheck\tCHECK="));
+		Serial.println(check);
+		Serial.print(("\tDATA="));
+		//Serial.write(buf,length);
+	}
+	this->clearResults();
+	hardSerial->setTimeout(timeout);
+	hardSerial->write(buf,length);
+	delay(500);//这里需要执行delay否则会导致异常
+	bool result = hardSerial->find((char*) check);
+	if(ESP8266_DEBUG){
+		Serial.print(("\tRESULT="));
+		Serial.println(result);
+	}
+	return result;
+	
+}
+
+/**
+* 直接用 uuid pwd 连接网络
+*/
+bool ESP8266::configWithPwd(String uuid,String pwd) {
+	if (doATCmdWithCheck("AT+RST\r\n", "WIFI GOT IP", 15000)) {
+		wifiConnect = true;
+		return true;
+	} else{
+		doATCmdWithCheck("AT+CWAUTOCONN=1\r\n", "OK", 1000);
+		//如果知道用户名和密码，就直接连接
+		//if (doATCmdWithCheck("AT+CWJAP=\"chuanke-qa\",\"chuanketest\"\r\n", "WIFI CONNECTED", 15000)) {
+		if (doATCmdWithCheck("AT+CWJAP=\""+uuid+"\",\""+pwd+"\"\r\n", "WIFI CONNECTED", 15000)) {
+			wifiConnect = true;
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 }
 
 /**
@@ -48,7 +92,7 @@ void ESP8266::smartConfig(String type/*TODO*/) { //这里需要传入一个回�
 	do {
 		delay(200);
 	} while (doATCmdWithCheck("AT\r\n", "OK", 1000) == false);
-
+		
 	if (doATCmdWithCheck("AT+RST\r\n", "WIFI GOT IP", 15000)) {
 		wifiConnect = true;
 	} else {
@@ -62,6 +106,54 @@ void ESP8266::smartConfig(String type/*TODO*/) { //这里需要传入一个回�
 		} else { //配置失败，进入无网络模式
 			wifiConnect = false;
 		}
+	}
+}
+
+/**
+*  建立tcp连接
+*/
+bool ESP8266::tcpStart(String host, int port) {
+	if (wifiConnect) {
+		if (doATCmdWithCheck("AT+CIPSTART=\"TCP\",\"" + host + "\"," + port + "\r\n","CONNECT", 2000)) {
+			return true;
+		}else{
+			return false;
+		}
+	}else{
+		return false;
+	}
+}
+
+/**
+*  建立tcp连接后，发送数据包长度
+*/
+bool ESP8266::tcpSendLength(int length) {
+	if (doATCmdWithCheck("AT+CIPSEND=" + (String) length + (String) "\r\n", ">", 1)) {
+		return true;
+	}else{
+		return false;
+	}
+}
+
+/**
+*  建立tcp连接后，不断的发送数据包
+*/
+bool ESP8266::tcpSend(byte buf[],int length) {
+	if (doATDataWithCheck(buf, length, "SEND OK", 1)) {
+		return true;
+	}else{
+		return false;
+	}
+}
+
+/**
+*  关闭tcp连接
+*/
+bool ESP8266::tcpClose() {
+	if (doATCmdWithCheck("AT+CIPCLOSE\r\n", "SEND OK", 100)) {
+		return true;
+	}else{
+		return false;
 	}
 }
 
