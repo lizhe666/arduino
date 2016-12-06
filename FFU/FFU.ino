@@ -14,7 +14,8 @@ void setup() {
   pinMode(NEW_AIR_PIN, OUTPUT);
   
   esp8266.init(&Serial3, 13);
-  esp8266.smartConfig("1");
+  //esp8266.smartConfig("1");
+  esp8266.configWithPwd("xiaoduola","baomazfour");
   Serial.println(F("setup out"));
 }
 //---------------------------------------------------------------------
