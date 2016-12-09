@@ -9,20 +9,20 @@ String lastStatusNewAir = "1";
 
 void setup() {
   Serial.begin(115200);
-  Serial.println(((String)"setup in"));
+  //Serial.println(((String)"setup in"));
 
   pinMode(NEW_AIR_PIN, OUTPUT);
   
-  esp8266.init(&Serial3, 13);
-  //esp8266.smartConfig("1");
-  esp8266.configWithPwd("xiaoduola","baomazfour");
+  esp8266.init(&Serial, 13);
+  esp8266.smartConfig("1");
+  //esp8266.configWithPwd("chuanke-qa","chuanketest");
   Serial.println(F("setup out"));
 }
 //---------------------------------------------------------------------
 void loop() {
   delay(5000);
   String host = F("www.ixinfeng.com");
-  String path = F("/st/Decision?uid=4&type=EQUIP_1&status=");
+  String path = F("/st/Decision?uid=3&type=EQUIP_1&status=");
 
   String html = esp8266.httpGet(host, 80, path + lastStatusNewAir);
 

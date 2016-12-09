@@ -69,10 +69,10 @@ bool ESP8266::configWithPwd(String uuid,String pwd) {
 		wifiConnect = true;
 		return true;
 	} else{
-		doATCmdWithCheck("AT+CWAUTOCONN=1\r\n", "OK", 1000);
 		//如果知道用户名和密码，就直接连接
 		//if (doATCmdWithCheck("AT+CWJAP=\"chuanke-qa\",\"chuanketest\"\r\n", "WIFI CONNECTED", 15000)) {
 		if (doATCmdWithCheck("AT+CWJAP=\""+uuid+"\",\""+pwd+"\"\r\n", "WIFI CONNECTED", 15000)) {
+			doATCmdWithCheck("AT+CWAUTOCONN=1\r\n", "OK", 1000);
 			wifiConnect = true;
 			return true;
 		}else{

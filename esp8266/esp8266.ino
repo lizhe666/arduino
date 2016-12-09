@@ -10,7 +10,7 @@ void setup() {
   Serial.println(((String)"setup in"));
 
 
-  esp8266.init(&Serial1, 13);
+  esp8266.init(&Serial, 13);
   esp8266.configWithPwd("chuanke-qa", "chuanketest");
   //esp8266.smartConfig("1");
   Serial.println(F("setup out"));
@@ -18,7 +18,7 @@ void setup() {
 //---------------------------------------------------------------------
 void loop() {
   byte buf[] = {0x01,0x02,0x03,0x04};
-  String host = F("192.168.1.115");
+  String host = F("192.168.1.113");
   int port = 8888;
   if(esp8266.tcpStart(host,port)){
     esp8266.tcpSendLength(8);

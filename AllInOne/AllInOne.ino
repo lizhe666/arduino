@@ -3,7 +3,7 @@
 //#include <MemoryFree.h>
 #define ALLINONE_DEBUG
 String ALLINONE_MD5_KEY = "2054120bd4cb83bb";
-String ALLINONE_UID = "4";
+String ALLINONE_UID = "3";
 
 //LCD
 #include <TFT_HX8357.h> // Hardware-specific library
@@ -98,8 +98,9 @@ void setup() {
   if (digitalRead(WIFI_PIN)) {  //pin high
     esp8266.init(&Serial1, 13);
     tft.drawCentreString("Wifi Configing ...", CENTRE, 48, TFT_FONT);
-    //esp8266.smartConfig("1");
-    esp8266.configWithPwd("xiaoduola","baomazfour");
+    esp8266.smartConfig("1");
+    //esp8266.configWithPwd("xiaoduola","baomazfour");
+    //esp8266.configWithPwd("chuanke-qa","chuanketest");
     tft.fillRect(0, 48, 480, 28, TFT_BLACK);//clear last
   }
   /////////////////////////////////////////////////////////////////////
